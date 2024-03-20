@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import ImageTable from './components/imageTable/ImageTable';
+import AddImage from './components/addImage/AddImage';
+import Login from './components/login/Login'; // Asegúrate de importar el componente Login
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext'; // Asegúrate de importar AuthProvider
+import { PrivateRoute } from './components/privateRoute/PrivateRoute';
 
-function App() {
+const App = () => {
+  const dtaMock = {
+    name: 'Jane Cooper',
+    title: 'Regional Paradigm Technician',
+    status: 'ACTIVE',
+    age: 27,
+    role: 'Admin',
+    imageSrc: 'https://st2.depositphotos.com/4211709/7708/i/450/depositphotos_77085751-stock-photo-flower.jpg',
+  };
+
+  const tableData = [
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+    dtaMock,
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+    <Router>
+       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/add-image" element={<PrivateRoute><AddImage /></PrivateRoute>} />
+        <Route path="/" element={<PrivateRoute><ImageTable data={tableData} itemsPerPage={5} /></PrivateRoute>} />
+      </Routes>
+    </Router>
+    </AuthProvider>
   );
 }
 

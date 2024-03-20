@@ -1,0 +1,25 @@
+/* AddImage.css */
+.image-preview img {
+    max-width: 300px; /* Máximo ancho para la imagen */
+    max-height: 300px; /* Máximo alto para la imagen */
+    width: auto; /* Ancho auto para mantener la relación de aspecto */
+    height: auto; /* Alto auto para mantener la relación de aspecto */
+    object-fit: contain; /* Se asegura de que la imagen se ajuste dentro del contenedor sin recortar */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para resaltar la imagen */
+  }
+  
+  /* Estilo de los botones si necesitas algo específico además de las clases de Bootstrap */
+  .btn-primary {
+    background-color: #007bff; /* Color azul de Bootstrap */
+    border: none;
+    padding: 0.375rem 0.75rem; /* Padding de Bootstrap */
+    border-radius: 0.25rem; /* Bordes redondeados de Bootstrap */
+    transition: background-color 0.15s ease-in-out; /* Transición suave para hover */
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3; /* Color azul más oscuro para hover */
+  }
+  
+  /* Estilos adicionales si necesitas personalizar más allá de Bootstrap */
+  

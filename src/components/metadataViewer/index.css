@@ -1,0 +1,26 @@
+.metadataViewer {
+    border: 2px solid #007bff; /* Borde azul para visualizar el contenedor */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px; /* Padding alrededor del contenido */
+    margin-top: 20px; /* Espacio sobre el contenedor */
+    width: 100%; /* Ancho total del contenedor */
+    max-width: 600px; /* Máximo ancho para mantenerlo manejable */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+    margin-bottom: 20px;
+  }
+  
+  .metadataContent {
+    height: 200px; /* Altura fija para el área de contenido */
+    overflow-y: auto; /* Habilita el desplazamiento vertical si el contenido excede la altura */
+    background-color: #f8f9fa; /* Color de fondo claro */
+    border: 1px solid #dee2e6; /* Borde sutil */
+    padding: 15px; /* Espacio interior para el contenido */
+    margin-top: 10px; /* Espacio entre el título y el contenido */
+    border-radius: 5px; /* Bordes redondeados para el área de contenido */
+  }
+  
+  .metadataViewer h3 {
+    color: #007bff; /* Color azul para el título para coincidir con el tema */
+    margin-bottom: 15px; /* Espacio debajo del título */
+  }
+  

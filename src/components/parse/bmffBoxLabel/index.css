@@ -1,0 +1,13 @@
+/* index.css */
+.bmffBoxLabel-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+.bmffBoxLabel-typography {
+    font-weight: bold;
+}
+
+.bmffBoxLabel-tooltip {
+    padding-left: 4px;
+}
