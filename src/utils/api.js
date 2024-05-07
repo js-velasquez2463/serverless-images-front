@@ -90,18 +90,19 @@ const uploadJumbfServerFile = async (file) => {
 
 
 // Función para crear un registro de imagen en tu API
-export const createImageRecord = async (objectKey) => {
+export const createImageRecord = async (objectKey, userId) => {
     try {
         // La URL del endpoint API para crear un registro de imagen
         const apiUrl = 'https://q8onxhk818.execute-api.us-east-1.amazonaws.com/Prod/images/create';
 
         // Parámetros para la solicitud, incluido el nombre del archivo (key)
-        const params = new URLSearchParams({ key: objectKey });
+        const params = new URLSearchParams({ key: objectKey, userId });
 
         // Datos a enviar en el cuerpo de la solicitud
         const data = {
             bucketName: IMAGES_BUCKET,
             objectKey: objectKey, // Este podría ser el mismo objectKey que pasas como parámetro
+            userId
         };
 
         // Realizar la solicitud POST con Axios
@@ -119,13 +120,14 @@ export const createImageRecord = async (objectKey) => {
     }
 };
 
-export const uploadImage = async (objectKey, file) => {
+export const uploadImage = async (objectKey, file, userId) => {
     try {
         const apiUrl = 'https://q8onxhk818.execute-api.us-east-1.amazonaws.com/Prod/uploadImage';
         const params = new URLSearchParams({ key: objectKey });
         const data = {
             bucketName: IMAGES_BUCKET,
             objectKey,
+            userId,
         };
 
         const response = await axios.post(`${apiUrl}?${params.toString()}`, data, {
@@ -143,7 +145,7 @@ export const uploadImage = async (objectKey, file) => {
             },
         });
         const uploadImageData = [
-            createImageRecord(objectKey),
+            createImageRecord(objectKey, userId),
             uploadJumbfServerFile(file)
         ]
         const response3 = await Promise.all(uploadImageData);
@@ -155,7 +157,7 @@ export const uploadImage = async (objectKey, file) => {
     }
 };
 
-export const processExifMetadata = async (objectKey) => {
+export const processExifMetadata = async (objectKey, userId) => {
     try {
         // Actualiza la URL del endpoint API para procesar datos EXIF
         const apiUrl = 'https://q8onxhk818.execute-api.us-east-1.amazonaws.com/Prod/processExif';
@@ -164,6 +166,7 @@ export const processExifMetadata = async (objectKey) => {
         const data = {
             bucketName: 'images-tfm2', // Asegúrate de que este sea el bucket correcto
             objectKey: objectKey, // El objectKey de la imagen cuyos datos EXIF quieres procesar
+            userId
         };
 
         // Realizar la solicitud POST con Axios
@@ -181,12 +184,13 @@ export const processExifMetadata = async (objectKey) => {
     }
 };
 
-export const encryptExifMetadata = async (objectKey) => {
+export const encryptExifMetadata = async (objectKey, userId) => {
     try {
         const apiUrl = 'https://q8onxhk818.execute-api.us-east-1.amazonaws.com/Prod/encryptMetadata';
         const data = {
             bucketName: 'images-tfm2', // Asegúrate de que este sea el bucket correcto
             objectKey: objectKey, // El objectKey de la imagen cuyos datos EXIF quieres procesar
+            userId
         };
         const response = await axios.post(apiUrl, data, {
             headers: {

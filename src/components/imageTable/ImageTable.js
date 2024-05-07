@@ -5,10 +5,12 @@ import Pagination from '../pagination/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { getImages, getImageUrl } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext'
+import { useLoading } from '../../hooks/useLoading'; 
 
 const ImageTable = ({ data }) => {
   const navigate = useNavigate();
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, tokens, userId } = useAuth();
+  const { startLoading, stopLoading } = useLoading(); // Usar el hook useLoading
 
   const itemsPerPage = 8; // O cualquier otro número que represente cuántos ítems quieres por página
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,12 +24,13 @@ const ImageTable = ({ data }) => {
 
   useEffect(() => {
     const fetchImages = async () => {
+      startLoading();
       try {
-        const userId = '1'; // Supongamos que deseas cargar imágenes para el userId 1, ajusta según sea necesario
+        //const userId = userId; // Supongamos que deseas cargar imágenes para el userId 1, ajusta según sea necesario
         const imagesData = await getImages(userId);
         // Para cada imagen, obtener la URL firmada
         const imagesWithSignedUrls = await Promise.all(imagesData?.result.map(async (item) => {
-          const downloadUrl = await getImageUrl(item.image_name, token);
+          const downloadUrl = await getImageUrl(item.image_name, tokens?.IdToken);
           console.log('resultt', downloadUrl)
           return { ...item, s3_url: downloadUrl };
         }));
@@ -36,6 +39,8 @@ const ImageTable = ({ data }) => {
         setTotalPages(Math.ceil(imagesWithSignedUrls.length / itemsPerPage));
       } catch (error) {
         console.error("Error fetching images:", error);
+      } finally {
+        stopLoading(); // Detener el indicador de carga
       }
     };
 

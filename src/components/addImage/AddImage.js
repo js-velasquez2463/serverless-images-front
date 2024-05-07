@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getImage, uploadImage, processExifMetadata, encryptExifMetadata, uploadMetadataFile, generateJumbf, downloadFile, processJumbFile } from '../../utils/api';
 import MetadataViewer from '../metadataViewer/MetadataViewer'
+import { useLoading } from '../../hooks/useLoading'; 
+import { useAuth } from '../../context/AuthContext'
 import './index.css';
 
 const AddImage = () => {
+    const { userId } = useAuth();
+    const { startLoading, stopLoading } = useLoading(); // Usar el hook useLoading
     const [image, setImage] = useState(null);
     const [jumbfImage, setJumbfImage] = useState(null);
     const [file, setFile] = useState(null);
@@ -37,37 +41,47 @@ const AddImage = () => {
         }
     };
 
-    const fetchUploadImage = async (fileName, file) => {
+    const fetchUploadImage = async (fileName, file, userId) => {
         try {
-            const imageData = await uploadImage(fileName, file);
+            startLoading();
+            const imageData = await uploadImage(fileName, file, userId);
             console.log('termino de subir la imagen', imageData);
             setUploadedImage(true);
         } catch (error) {
             console.log(error);
+        } finally {
+            stopLoading();
         }
     };
 
-    const fetchProcessMetadata = async (fileName) => {
+    const fetchProcessMetadata = async (fileName, userId) => {
         try {
-            const imageMetaData = await processExifMetadata(fileName);
+            startLoading();
+            const imageMetaData = await processExifMetadata(fileName, userId);
             console.log('termino de obtener la metadata', imageMetaData);
             setMetadata(imageMetaData);
         } catch (error) {
             console.log(error);
+        } finally {
+            stopLoading();
         }
     };
 
     const fetchEncryptedMetadata = async (fileName) => {
         try {
-            const imageMetaDataEncrypted = await encryptExifMetadata(fileName);
+            startLoading();
+            const imageMetaDataEncrypted = await encryptExifMetadata(fileName, userId);
             console.log('termino de obtener la metadata', imageMetaDataEncrypted);
             setEncryptedMetadata(imageMetaDataEncrypted);
         } catch (error) {
             console.log(error);
+        } finally {
+            stopLoading();
         }
     };
 
     const fetchGenerateJumbfFile = async (fileName, jsonObject) => {
+        startLoading();
         try {
             const data = await uploadMetadataFile(fileName, jsonObject);
             console.log('termino de subir el json', data);
@@ -76,11 +90,12 @@ const AddImage = () => {
             setGeneratedJumbf(true);
         } catch (error) {
             console.log(error);
+        } finally {
+            stopLoading();
         }
     };
 
     const handleImageChange = (e) => {
-        // Suponiendo que quieres mostrar la imagen en una etiqueta <img>
         const file = e.target.files[0];
         const fileName = file.name;
         console.log("Nombre del archivo seleccionado:", fileName);
@@ -97,6 +112,7 @@ const AddImage = () => {
     };
 
     const fetchDownloadJumbfFile = async (fileName) => {
+        startLoading();
         try {
             const file = await downloadFile(fileName);
             const reader = new FileReader();
@@ -111,10 +127,13 @@ const AddImage = () => {
             setGeneratedJumbf(true);
         } catch (error) {
             console.log(error);
+        } finally {
+            stopLoading();
         }
     };
 
     const fetchProcessJumbfFile = async (file, fileName) => {
+        startLoading();
         try {
             const targetFile = 'processed_' + fileName;
             const response = await processJumbFile(file, targetFile);
@@ -123,11 +142,13 @@ const AddImage = () => {
             setParsedFileName(response.fileName);
             setErrorMessage(null);
             setLoading(false);
-        }catch(error) {
+        } catch(error) {
             setJumbfStructure(null);
             setLoading(false);
             setParsedFileName(null);
             console.log(error);
+        } finally {
+            stopLoading();
         }
     };
 
@@ -140,7 +161,7 @@ const AddImage = () => {
     const handleUploadImage = () => {
         // Aquí manejarías la lógica para añadir la nueva imagen y la información al estado global o enviarlo a un servidor
         console.log({ image, title, status, age, role });
-        fetchUploadImage(fileName, file);
+        fetchUploadImage(fileName, file, userId);
         // Volver a la tabla de imágenes
         //navigate('/');
     };
@@ -148,7 +169,7 @@ const AddImage = () => {
     const handleProcessMetadata = () => {
         // Aquí manejarías la lógica para añadir la nueva imagen y la información al estado global o enviarlo a un servidor
         console.log({ image, title, status, age, role });
-        fetchProcessMetadata(fileName);
+        fetchProcessMetadata(fileName, userId);
         // Volver a la tabla de imágenes
         //navigate('/');
     };

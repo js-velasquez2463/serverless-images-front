@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { parseJwt } from  '../../utils/helpers';
 import './index.css';
 
 const Login = () => {
@@ -8,7 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuth();  // Usa el contexto de autenticación
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,19 +21,22 @@ const Login = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        login(data.token)
+      const data = (await response.json()).token;
+      console.log('dataa', data)
+      if (data.AccessToken && data.IdToken && data.RefreshToken) {
+        login(data);  // Envía todos los tokens al contexto de autenticación
         navigate('/'); // Redirige al usuario a la página principal después del login exitoso.
+        const decoded = parseJwt(data.IdToken);
+        //console.log('token decodeedd', decoded)
       } else {
         setError('Login fallido. Por favor, intente de nuevo.');
       }
     } catch (error) {
+      console.error(error);
       setError('Error en el servidor. Por favor, intente más tarde.');
     }
   };
-
+ 
   return (
     <div className="login-container">
       <h2>Login</h2>
@@ -50,6 +54,6 @@ const Login = () => {
       {error && <p>{error}</p>}
     </div>
   );
-};
+}
 
 export default Login;

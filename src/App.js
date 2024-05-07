@@ -4,6 +4,8 @@ import AddImage from './components/addImage/AddImage';
 import Login from './components/login/Login'; // Asegúrate de importar el componente Login
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext'; // Asegúrate de importar AuthProvider
+import LoadingIndicator from './components/loader/LoadingIndicator'; 
+import { LoadingProvider } from './hooks/useLoading';
 import { PrivateRoute } from './components/privateRoute/PrivateRoute';
 
 const App = () => {
@@ -33,13 +35,16 @@ const App = () => {
 
   return (
     <AuthProvider>
-    <Router>
-       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/add-image" element={<PrivateRoute><AddImage /></PrivateRoute>} />
-        <Route path="/" element={<PrivateRoute><ImageTable data={tableData} itemsPerPage={5} /></PrivateRoute>} />
-      </Routes>
-    </Router>
+      <LoadingProvider>
+        <LoadingIndicator />
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/add-image" element={<PrivateRoute><AddImage /></PrivateRoute>} />
+            <Route path="/" element={<PrivateRoute><ImageTable data={tableData} itemsPerPage={5} /></PrivateRoute>} />
+          </Routes>
+        </Router>
+      </LoadingProvider>
     </AuthProvider>
   );
 }
